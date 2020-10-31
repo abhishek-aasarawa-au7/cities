@@ -5,12 +5,12 @@ import { map } from "lodash";
 import { connect } from "react-redux";
 
 // redux actions
-import { DELETE_CITY } from "../../redux/actions";
+import { DELETE_CITY, DESELECT_CITY } from "../../redux/actions";
 
 // style
 import useStyles from "./citiesList.style";
 
-const CitiesList = ({ cities, deleteCity }) => {
+const CitiesList = ({ cities, deleteCity, deSelect }) => {
   const classes = useStyles();
 
   return (
@@ -31,7 +31,11 @@ const CitiesList = ({ cities, deleteCity }) => {
                     <Grid item xs={6}></Grid>
                     <Grid item xs={6}>
                       <DeleteIcon
-                        onClick={() => deleteCity(city.id)}
+                        color="primary"
+                        onClick={() => {
+                          deleteCity(city.id);
+                          deSelect(city.name);
+                        }}
                         style={{ cursor: "pointer" }}
                       />
                     </Grid>
@@ -59,6 +63,11 @@ const mapActionToProps = (dispatch) => {
       dispatch({
         type: DELETE_CITY,
         payload: id,
+      }),
+    deSelect: (name) =>
+      dispatch({
+        type: DESELECT_CITY,
+        payload: name,
       }),
   };
 };

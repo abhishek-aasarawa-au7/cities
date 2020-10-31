@@ -1,8 +1,13 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Leaflet from "leaflet";
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import { connect } from "react-redux";
 import { map } from "lodash";
+import { Button, Typography } from "@material-ui/core";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+
+// style
+import useStyles from "./map.style";
 
 Leaflet.Icon.Default.imagePath = "../node_modules/leaflet";
 
@@ -14,24 +19,42 @@ Leaflet.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
-const CitiesMap = ({ cities }) => (
-  <Map center={[parseFloat(cities[0].lat), parseFloat(cities[0].lon)]} zoom={5}>
-    <TileLayer
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    />
-    {map(cities, (city) => {
-      return (
-        <Marker
-          position={[parseFloat(city.lat), parseFloat(city.lon)]}
-          key={city.id}
-        >
-          <Popup>{city.name}</Popup>
-        </Marker>
-      );
-    })}
-  </Map>
-);
+const CitiesMap = ({ cities, history }) => {
+  const classes = useStyles();
+  return (
+    <Fragment>
+      <Map center={[22, 78.9629]} zoom={5} style={{ zIndex: "1" }}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        />
+        {map(cities, (city) => {
+          return (
+            <Marker
+              position={[parseFloat(city.lat), parseFloat(city.lon)]}
+              key={city.id}
+            >
+              <Popup>{city.name}</Popup>
+            </Marker>
+          );
+        })}
+      </Map>
+
+      <Button
+        variant="contained"
+        color="inherit"
+        size="small"
+        startIcon={<ArrowBackIcon color="primary" />}
+        onClick={() => history.push("/")}
+        className={classes.button}
+      >
+        <Typography color="primary" variant="body1">
+          Go Back
+        </Typography>
+      </Button>
+    </Fragment>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {

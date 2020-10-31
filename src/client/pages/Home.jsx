@@ -72,13 +72,17 @@ const Home = ({ addCity, history, selectCity, data, isEmpty }) => {
               onChange={onChangeName}
             >
               <MenuItem value="">
-                <em>None</em>
+                <Typography color="primary" variant="body1">
+                  <em>None</em>
+                </Typography>
               </MenuItem>
               {data.map((city) => {
                 return (
                   !city.isSelected && (
                     <MenuItem value={city} key={city.name}>
-                      {city.name}
+                      <Typography color="primary" variant="body1">
+                        {city.name}
+                      </Typography>
                     </MenuItem>
                   )
                 );
@@ -93,10 +97,12 @@ const Home = ({ addCity, history, selectCity, data, isEmpty }) => {
               color="inherit"
               size="small"
               className={classes.viewButton}
-              startIcon={<VisibilityIcon />}
+              startIcon={<VisibilityIcon color="primary" />}
               onClick={() => history.push("/map")}
             >
-              See on map
+              <Typography color="primary" variant="body1">
+                See on map
+              </Typography>
             </Button>
           )}
         </Grid>
