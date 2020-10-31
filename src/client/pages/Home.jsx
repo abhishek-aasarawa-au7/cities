@@ -1,5 +1,14 @@
 import React, { Fragment, useState } from "react";
-import { Typography, TextField, Grid } from "@material-ui/core";
+import {
+  Typography,
+  Grid,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
+  Button,
+} from "@material-ui/core";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 import { connect } from "react-redux";
 
 // style
@@ -11,21 +20,35 @@ import CitiesList from "../components/CitiesList/CitiesList";
 // reducer action
 import { ADD_CITY } from "../redux/actions";
 
-const Home = ({ addCity }) => {
+// cities data
+import citiesData from "../utils/dataHandler";
+
+const Home = ({ addCity, history }) => {
   const classes = useStyles();
 
   // state
   const [name, setName] = useState("");
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState(citiesData());
 
   const onChangeName = (e) => {
-    setName(e.currentTarget.value);
+    setName(e.target.value);
+    addCity(e.target.value);
+    setData(
+      data.map((city) => {
+        if (city.name === e.target.value.name)
+          return { ...city, isSelected: true };
+        return city;
+      })
+    );
   };
 
-  const onEnter = (e) => {
-    if (e.key === "Enter") {
-      addCity(name);
-      setName("");
-    }
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
   };
 
   return (
@@ -44,20 +67,47 @@ const Home = ({ addCity }) => {
       >
         <Grid item xs={4}></Grid>
         <Grid item xs={4}>
-          <TextField
-            id="add"
-            name="city"
-            value={name}
-            label="City Visited"
-            variant="outlined"
-            onChange={onChangeName}
-            onKeyPress={onEnter}
-            fullWidth
-            autoFocus
-            size="medium"
-          />
+          <FormControl
+            className={classes.formControl}
+            style={{ width: "100%" }}
+          >
+            <InputLabel id="city-visited-label">Select city</InputLabel>
+            <Select
+              labelId="City Visited"
+              id="city-visited"
+              open={open}
+              onClose={handleClose}
+              onOpen={handleOpen}
+              value={name}
+              onChange={onChangeName}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {data.map((city) => {
+                return (
+                  !city.isSelected && (
+                    <MenuItem value={city} key={city.name}>
+                      {city.name}
+                    </MenuItem>
+                  )
+                );
+              })}
+            </Select>
+          </FormControl>
         </Grid>
-        <Grid item xs={4}></Grid>
+        <Grid item xs={4}>
+          <Button
+            variant="contained"
+            color="inherit"
+            size="small"
+            className={classes.viewButton}
+            startIcon={<VisibilityIcon />}
+            onClick={() => history.push("/map")}
+          >
+            See on map
+          </Button>
+        </Grid>
         <Grid item xs={12}>
           <CitiesList />
         </Grid>

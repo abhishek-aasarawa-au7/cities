@@ -9,6 +9,14 @@ const useStyles = makeStyles((theme) => ({
   input: {
     padding: theme.spacing(0, -10),
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  viewButton: {
+    marginLeft: "20%",
+    marginTop: "4%",
+  },
 }));
 
 export default useStyles;
