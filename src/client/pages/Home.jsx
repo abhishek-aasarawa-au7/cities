@@ -18,29 +18,19 @@ import useStyles from "./home.style";
 import CitiesList from "../components/CitiesList/CitiesList";
 
 // reducer action
-import { ADD_CITY } from "../redux/actions";
+import { ADD_CITY, SELECT_CITY } from "../redux/actions";
 
-// cities data
-import citiesData from "../utils/dataHandler";
-
-const Home = ({ addCity, history }) => {
+const Home = ({ addCity, history, selectCity, data, isEmpty }) => {
   const classes = useStyles();
 
   // state
   const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState(citiesData());
 
   const onChangeName = (e) => {
     setName(e.target.value);
     addCity(e.target.value);
-    setData(
-      data.map((city) => {
-        if (city.name === e.target.value.name)
-          return { ...city, isSelected: true };
-        return city;
-      })
-    );
+    selectCity(e.target.value.name);
   };
 
   const handleClose = () => {
@@ -97,16 +87,18 @@ const Home = ({ addCity, history }) => {
           </FormControl>
         </Grid>
         <Grid item xs={4}>
-          <Button
-            variant="contained"
-            color="inherit"
-            size="small"
-            className={classes.viewButton}
-            startIcon={<VisibilityIcon />}
-            onClick={() => history.push("/map")}
-          >
-            See on map
-          </Button>
+          {!isEmpty && (
+            <Button
+              variant="contained"
+              color="inherit"
+              size="small"
+              className={classes.viewButton}
+              startIcon={<VisibilityIcon />}
+              onClick={() => history.push("/map")}
+            >
+              See on map
+            </Button>
+          )}
         </Grid>
         <Grid item xs={12}>
           <CitiesList />
@@ -116,6 +108,13 @@ const Home = ({ addCity, history }) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    data: state.citiesData,
+    isEmpty: state.cities.length === 0 ? true : false,
+  };
+};
+
 const mapActionToProps = (dispatch) => {
   return {
     addCity: (city) =>
@@ -123,7 +122,12 @@ const mapActionToProps = (dispatch) => {
         type: ADD_CITY,
         payload: city,
       }),
+    selectCity: (name) =>
+      dispatch({
+        type: SELECT_CITY,
+        payload: name,
+      }),
   };
 };
 
-export default connect(null, mapActionToProps)(Home);
+export default connect(mapStateToProps, mapActionToProps)(Home);
