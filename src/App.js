@@ -1,26 +1,33 @@
 import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import { Switch, Route } from "react-router";
+import { map } from "lodash";
+import Container from "@material-ui/core/Container";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { PersistGate } from "redux-persist/integration/react";
 
-function App() {
+// theme
+import theme from "./project.theme";
+
+// routes
+import routes from "./client/routes";
+
+// persister
+import { persister } from "./client/redux/store";
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <PersistGate loading={null} persistor={persister}>
+      <ThemeProvider theme={theme}>
+        <Container maxWidth="xl">
+          <Switch>
+            {map(routes, (route, idx) => {
+              return <Route {...route} key={idx} />;
+            })}
+          </Switch>
+        </Container>
+      </ThemeProvider>
+    </PersistGate>
   );
-}
+};
 
 export default App;
